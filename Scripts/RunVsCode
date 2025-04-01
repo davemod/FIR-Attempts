@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# FILEPATH: /Users/davidhill/Code/Juce/Projects/RemoteMidiMonitor/Scripts/RunProjucer.sh
+SCRIPT_PATH="$(dirname "$0")"
+
+# Run BuildProjucer.sh in the same directory
+"$SCRIPT_PATH"/BuildProjucer.sh
+
+# Create Exporter
+"$SCRIPT_PATH"/CreateExporter.sh
+
+# Run Vscode and open project folder
+"/Applications/Visual Studio Code.app/Contents/MacOS/Electron" "$SCRIPT_PATH"/../

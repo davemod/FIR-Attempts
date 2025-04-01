@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# FILEPATH: /Users/davidhill/Code/Juce/Projects/RemoteMidiMonitor/Scripts/RunProjucer.sh
+SCRIPT_PATH="$(dirname "$0")"
+
+# Run BuildProjucer.sh in the same directory
+"$SCRIPT_PATH"/BuildProjucer.sh
+
+# Check the result
+if [ $? -eq 0 ]; then
+    
+    echo ""
+    echo "** RUNNING PROJUCER **"
+    echo ""
+
+    "$SCRIPT_PATH"/../Submodules/JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer "$SCRIPT_PATH"/../*.jucer
+    exit 0
+else
+
+    echo "Failed to build Projucer..."
+
+    exit 1
+fi

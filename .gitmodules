@@ -1,0 +1,9 @@
+[submodule "Submodules/JUCE"]
+	path = Submodules/JUCE
+	url = https://github.com/davemod/JUCE
+[submodule "Submodules/hill_gui"]
+	path = Submodules/hill_gui
+	url = https://github.com/davemod/hill_gui
+[submodule "Submodules/hill_app"]
+	path = Submodules/hill_app
+	url = https://github.com/davemod/hill_app

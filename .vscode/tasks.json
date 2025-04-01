@@ -1,0 +1,123 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Open .jucer",
+            "type": "shell",
+            "command": "./Scripts/RunProjucer.sh",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true,
+            }
+        },
+        {
+            "label": "Build Standalone Debug",
+            "type": "shell",
+            "command": "./Scripts/Build.sh Debug 'Standalone Plugin'",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },    
+            "problemMatcher": {
+                "base": "$gcc",
+                "owner": "cpp",
+                "applyTo": "allDocuments",
+                "fileLocation": ["absolute"],
+                // the problem with this pattern is that its not capable of handling line breaks when the terminal is to narrow. to ensure, your terminal does not use line breaks go to cmd+p -> Terminal: set fixed dimensions and enter 1000 for cols and 1 for lines
+                "pattern": [
+                    {
+                        //"regexp": "(.*):(\\d+):(\\d+):\\s+(fatal error|error|warning):\\s+(.*)$", // mac gcc
+                        //"regexp": "\\s+(.*)\\((\\d+),(\\d+)\\):\\s+(fatal error|error|warning)\\s+[A-Z]\\d+:\\s+(.*)$", // windows msvc
+                        "regexp": "\\s*(.*)[:\\(](\\d+)[,:](\\d+)\\)*:\\s+(fatal error|error|warning)\\s*[A-Z]*\\d*:\\s+(.*)$", // mac and win compatible
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5,
+                        "loop": true
+                    },
+                ]
+            }
+            // "problemMatcher": {
+            //     "owner": "cpp",
+            //     // use pattern to show clang linker errors
+            //     // "pattern": [
+            //     //     {
+            //     //         // match clang errors and warnings
+            //     //         "regexp": "^(clang):\\s+(error|warning):\\s+(.*)$",
+            //     //         "file": 1,
+            //     //         "severity": 2,
+            //     //         "message": 3
+            //     //     }
+            //     // ]
+            // }
+        },
+        {
+            "label": "Build Standalone Release",
+            "type": "shell",
+            "command": "sh ./Scripts/Build.sh Release 'Standalone Plugin'",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build VST3 Debug",
+            "type": "shell",
+            "command": "sh ./Scripts/Build.sh Debug 'VST3'",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Build AU Debug",
+            "type": "shell",
+            "command": "sh ./Scripts/Build.sh Debug 'AU'",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Build VST3 Release",
+            "type": "shell",
+            "command": "sh ./Scripts/Build.sh Release 'VST3'",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "print workspaceFolder",
+            "type": "shell",
+            "command": "echo ${workspaceFolder}"
+        }
+    ]
+}
+
+
+
+/*
+Possible Schcemes for some plugin, e.g.
+    Monitoring Manager - All
+    Monitoring Manager - AU
+    Monitoring Manager - Shared Code
+    Monitoring Manager - Standalone Plugin
+    Monitoring Manager - VST3
+    Monitoring Manager - VST3 Manifest Helper
+*/
