@@ -130,7 +130,7 @@ void FirFilter::updateFilter()
         case 5:
         {
 
-            Array<float> coeff{ -0.3f, 0.2f, -0.1f, 0.f, 0.1f, 0.2f, 0.3f };
+            Array<float> coeff{ 0.3f, 0.2f, 0.1f, 0.2f, 0.1f, 0.2f, 0.3f };
             newCoefficients = new Coefficients (coeff.getRawDataPointer (), coeff.size () );
             delayLine.setDelay (coeff.size () / 2);
 
@@ -140,4 +140,43 @@ void FirFilter::updateFilter()
             jassertfalse; // Invalid function
             break;
     }
+
+    auto isSymmetric = [&](){
+        if (! newCoefficients)
+            return false;
+
+        auto& coeffs = newCoefficients->coefficients;
+        
+        if (coeffs.size() % 2 == 0)
+            return false; // Even length coefficients cannot be symmetric
+
+        for (size_t i = 0; i < coeffs.size() / 2; ++i)
+        {
+            if (coeffs[i] != coeffs[coeffs.size() - 1 - i])
+                return false;
+        }
+        
+        return true;
+    };
+
+    auto isAntiSymmetric = [&](){
+        if (! newCoefficients)
+            return false;
+
+        auto& coeffs = newCoefficients->coefficients;
+        
+        if (coeffs.size() % 2 == 0)
+            return false; // Even length coefficients cannot be anti-symmetric
+
+        for (size_t i = 0; i < coeffs.size() / 2; ++i)
+        {
+            if (coeffs[i] != -coeffs[coeffs.size() - 1 - i])
+                return false;
+        }
+        
+        return true;
+    };
+    
+    DBG ("Symmetric: " << (int)isSymmetric());
+    DBG ("Anti-Symmetric: " << (int)isAntiSymmetric());
 }
