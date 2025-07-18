@@ -2,7 +2,7 @@
 
 #include <JuceHeader.h>
 
-class FirFilter : AudioProcessorListener
+class FirFilter : AudioProcessorListener, private AsyncUpdater
 {
 public:
     FirFilter (AudioProcessor& p);
@@ -49,4 +49,5 @@ private:
     }
 
     void updateFilter ();
+    void handleAsyncUpdate () override;
 };

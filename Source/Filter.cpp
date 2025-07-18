@@ -10,6 +10,7 @@ namespace IDs
     static inline String StopBandWeightId{ "StopBandWeight" };
     static inline String AmplitudeId{ "Amplitude" };
     static inline String SplineId{ "Spline" };
+    static inline String LatencyOffsetId{ "LatencyOffset" };
 }
 
 StringArray createFunctionChoices ()
@@ -51,6 +52,7 @@ FirFilter::FirFilter(AudioProcessor &p)
     parameters.set (IDs::TransitionWidthId, new AudioParameterFloat({IDs::TransitionWidthId, 1}, IDs::TransitionWidthId, 0.0001f, 0.5f, 0.5f));
     parameters.set (IDs::AmplitudeId, new AudioParameterFloat({IDs::AmplitudeId, 1}, IDs::AmplitudeId, -100.f, 0.f, -100.f));
     parameters.set (IDs::SplineId, new AudioParameterFloat({IDs::SplineId, 1}, IDs::SplineId, 1.f, 4.f, 1.f));
+    parameters.set (IDs::LatencyOffsetId, new AudioParameterInt({IDs::LatencyOffsetId, 1}, IDs::LatencyOffsetId, -1, 1, 0));
 
     for (auto param : parameters)
         processor.addParameter (param);
@@ -91,7 +93,7 @@ void FirFilter::process(Context context)
 
 void FirFilter::audioProcessorParameterChanged(AudioProcessor *, int, float)
 {
-    updateFilter ();
+    triggerAsyncUpdate ();
 }
 
 void FirFilter::updateFilter()
@@ -141,6 +143,16 @@ void FirFilter::updateFilter()
             break;
     }
 
+
+    auto latencySamples = (int)(newCoefficients ? newCoefficients->getFilterOrder() / 2 : 0);
+    
+    if (auto iParam = dynamic_cast<AudioParameterInt*> (parameters[IDs::LatencyOffsetId]))
+        latencySamples += iParam->get ();
+
+    latencySamples = jmax (0, latencySamples);
+
+    processor.setLatencySamples (latencySamples);
+
     auto isSymmetric = [&](){
         if (! newCoefficients)
             return false;
@@ -179,4 +191,9 @@ void FirFilter::updateFilter()
     
     DBG ("Symmetric: " << (int)isSymmetric());
     DBG ("Anti-Symmetric: " << (int)isAntiSymmetric());
+}
+
+void FirFilter::handleAsyncUpdate()
+{
+    updateFilter ();
 }
